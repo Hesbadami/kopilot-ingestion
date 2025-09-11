@@ -1,4 +1,4 @@
-bind = ["127.0.0.1:8002"]
+bind = ["127.0.0.1:8002", "192.168.193.10:8002"]
 workers = 3
 worker_class = "uvicorn.workers.UvicornWorker"
 worker_connections = 1000
