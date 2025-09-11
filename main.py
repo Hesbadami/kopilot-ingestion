@@ -13,7 +13,7 @@ class FastAPIServer:
         logger.info("Starting the FastAPI server")
 
     def run(self):
-        uvicorn.run(api, host="127.0.0.1", port=8001, reload=True)
+        uvicorn.run(api, host="127.0.0.1", port=8001)
 
 def main():
     server = FastAPIServer()
