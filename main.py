@@ -5,6 +5,7 @@ import uvicorn
 from common.server import api
 
 import endpoints.telegram
+import endpoints.zoom
 
 logger = logging.getLogger()
 
