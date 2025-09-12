@@ -1,10 +1,12 @@
 import logging
 from typing import Optional
 import json
+from datetime import datetime
 
 from common.server import api
 from common.mysql import MySQL as db
 from common.config import TELEGRAM_SECRET
+from common.nats_client import NATSClient as ns
 
 from fastapi import Request, Header, HTTPException
 
@@ -41,9 +43,18 @@ async def telegram_webhook(
         INSERT INTO raw_events (source, payload)
         VALUES (%s, %s)
         """
-        params = ("telegram", update_data)
+        params = ("telegram", json.dumps(update_data))
 
         event_id = db.execute_insert(query, params)
+
+        await ns.publish(
+            "telegram.update",
+            {
+                "event_id": event_id,
+                "update_data": update_data,
+                "timestamp": datetime.now().isoformat()
+            }
+        )
 
         logger.info(f"Successfully stored telegram event {event_id}")
         return {"status": "ok", "event_id": event_id}

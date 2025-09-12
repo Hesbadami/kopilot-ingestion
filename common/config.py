@@ -18,6 +18,10 @@ MYSQL_CFG = {
 
 TELEGRAM_SECRET = os.environ.get("TELEGRAM_SECRET")
 
+ZOOM_SECRET = os.environ.get("ZOOM_SECRET")
+
+NATS_URL = os.environ.get("NATS_URL")
+
 LOGGING_CFG = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -62,6 +66,15 @@ LOGGING_CFG = {
             'maxBytes': 10*1024*1024,
             'backupCount': 5,
         },
+        'nats_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.environ.get("LOG_PATH")+"nats.log",
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+            'maxBytes': 10*1024*1024,
+            'backupCount': 5,
+        },
     },
     'loggers': {
         '': {
@@ -76,6 +89,11 @@ LOGGING_CFG = {
         },
         'telegram': {
             'handlers': ['console', 'telegram_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'nats': {
+            'handlers': ['console', 'nats_file'],
             'level': 'INFO',
             'propagate': False,
         },
