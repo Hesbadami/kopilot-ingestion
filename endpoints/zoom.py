@@ -83,7 +83,6 @@ async def zoom_webhook(
             "zoom.event",
             {
                 "event_id": event_id,
-                "event_data": event_data,
                 "timestamp": datetime.now().isoformat()
             }
         )

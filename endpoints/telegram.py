@@ -51,7 +51,6 @@ async def telegram_webhook(
             "telegram.update",
             {
                 "event_id": event_id,
-                "update_data": update_data,
                 "timestamp": datetime.now().isoformat()
             }
         )
