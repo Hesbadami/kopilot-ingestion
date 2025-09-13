@@ -21,7 +21,7 @@ async def zoom_webhook(
     x_zm_signature: Optional[str] = Header(None, alias="x-zm-signature"),
     x_zm_request_timestamp: Optional[str] = Header(None, alias="x-zm-request-timestamp")
 ):
-
+    
     try:
         body = await request.body()
         body_str = body.decode('utf-8')
@@ -77,7 +77,7 @@ async def zoom_webhook(
         """
         params = ("zoom", json.dumps(event_data))
 
-        event_id = db.execute_insert(query, params)
+        event_id = await db.aexecute_insert(query, params)
 
         await ns.publish(
             "zoom.event",

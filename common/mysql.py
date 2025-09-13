@@ -1,16 +1,19 @@
 import logging
-from contextlib import contextmanager
+from contextlib import contextmanager, asynccontextmanager
 from typing import Optional, Type, Union
 
 from common.config import MYSQL_CFG
 
 from mysql.connector import Error
 from mysql.connector.pooling import MySQLConnectionPool
+import anyio
+from anyio import to_thread, Semaphore
 
 logger = logging.getLogger("mysql")
 
 class MySQL:
     _instance: Optional[MySQLConnectionPool] = None
+    _semaphore = Semaphore(MYSQL_CFG.get("pool_size", 5))
 
     @classmethod
     def get_pool(cls) -> MySQLConnectionPool:
@@ -34,23 +37,6 @@ class MySQL:
         finally:
             if con and con.is_connected():
                 con.close()
-    
-    @classmethod
-    @contextmanager
-    def transaction(cls):
-        with cls.connection() as con:
-            cursor = con.cursor(dictionary=True)
-            try:
-                con.start_transaction()
-                yield cursor
-                con.commit()
-            except Exception as e:
-                con.rollback()
-                logger.error(f"Transaction rolled back due to error: {e}")
-                raise
-            finally:
-                cursor.close()
-
     
     @classmethod
     def execute_query(
@@ -134,3 +120,19 @@ class MySQL:
                 if cursor:
                     cursor.close()
     
+    @classmethod
+    async def aexecute_query(cls, query, params=None, fetch_one=False):
+        async with cls._semaphore:
+            return await to_thread.run_sync(cls.execute_query, query, params, fetch_one)
+    @classmethod
+    async def aexecute_update(cls, query, params=None):
+        async with cls._semaphore:
+            return await to_thread.run_sync(cls.execute_update, query, params)
+    @classmethod
+    async def aexecute_insert(cls, query, params=None):
+        async with cls._semaphore:
+            return await to_thread.run_sync(cls.execute_insert, query, params)
+    @classmethod
+    async def aexecute_many(cls, query, params_list):
+        async with cls._semaphore:
+            return await to_thread.run_sync(cls.execute_many, query, params_list)

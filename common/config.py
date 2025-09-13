@@ -13,7 +13,10 @@ MYSQL_CFG = {
     'host': os.environ.get("MYSQL_HOST"),
     'user': os.environ.get("MYSQL_USER"),
     'password': os.environ.get("MYSQL_PASSWORD"),
-    'database': os.environ.get("MYSQL_DATABASE")
+    'database': os.environ.get("MYSQL_DATABASE"),
+    'pool_size': 5,
+    'max_overflow': 3,
+    'pool_timeout': 30
 }
 
 TELEGRAM_SECRET = os.environ.get("TELEGRAM_SECRET")
@@ -66,6 +69,15 @@ LOGGING_CFG = {
             'maxBytes': 10*1024*1024,
             'backupCount': 5,
         },
+        'zoom_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.environ.get("LOG_PATH")+"zoom.log",
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+            'maxBytes': 10*1024*1024,
+            'backupCount': 5,
+        },
         'nats_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -89,6 +101,11 @@ LOGGING_CFG = {
         },
         'telegram': {
             'handlers': ['console', 'telegram_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'zoom': {
+            'handlers': ['console', 'zoom_file'],
             'level': 'INFO',
             'propagate': False,
         },

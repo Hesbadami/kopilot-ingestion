@@ -45,7 +45,7 @@ async def telegram_webhook(
         """
         params = ("telegram", json.dumps(update_data))
 
-        event_id = db.execute_insert(query, params)
+        event_id = await db.aexecute_insert(query, params)
 
         await ns.publish(
             "telegram.update",

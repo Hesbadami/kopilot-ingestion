@@ -1,11 +1,11 @@
 import json
 import logging
-import anyio
 from typing import Dict, Any, Optional
 
 from common.config import NATS_URL
 
 import nats
+import anyio
 
 logger = logging.getLogger("nats")
 
