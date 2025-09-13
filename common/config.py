@@ -15,8 +15,6 @@ MYSQL_CFG = {
     'password': os.environ.get("MYSQL_PASSWORD"),
     'database': os.environ.get("MYSQL_DATABASE"),
     'pool_size': 5,
-    'max_overflow': 3,
-    'pool_timeout': 30
 }
 
 TELEGRAM_SECRET = os.environ.get("TELEGRAM_SECRET")
