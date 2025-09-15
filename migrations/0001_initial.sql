@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS `raw_events` (
     INDEX `idx_source_timestamp` (`source`, `timestamp`),
     INDEX `idx_processed` (`processed`),
     INDEX `idx_source` (`source`)
-)
+);
